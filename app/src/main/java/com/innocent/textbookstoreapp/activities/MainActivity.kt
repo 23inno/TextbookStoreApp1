@@ -17,9 +17,30 @@ import com.innocent.textbookstoreapp.model.Book
 class MainActivity : AppCompatActivity() {
 
     private val bookList = mutableListOf(
-        Book("Maths 101", "R250"),
-        Book("Physics 201", "R300"),
-        Book("IT Essentials", "R200")
+        Book(
+            "Maths 101",
+            "J. Smith",
+            "2nd Edition",
+            "R250",
+            "A mathematics textbook suitable for first-year students.",
+            R.drawable.ic_launcher_background
+        ),
+        Book(
+            "Physics 201",
+            "L. Nkosi",
+            "1st Edition",
+            "R300",
+            "A physics textbook covering basic mechanics and electricity.",
+            R.drawable.ic_launcher_background
+        ),
+        Book(
+            "IT Essentials",
+            "P. Mokoena",
+            "3rd Edition",
+            "R200",
+            "An introductory information technology textbook for students.",
+            R.drawable.ic_launcher_background
+        )
     )
 
     private val filteredList = mutableListOf<Book>()
@@ -31,11 +52,27 @@ class MainActivity : AppCompatActivity() {
             if (result.resultCode == RESULT_OK) {
 
                 val title = result.data?.getStringExtra("bookTitle")
+                val author = result.data?.getStringExtra("bookAuthor")
+                val edition = result.data?.getStringExtra("bookEdition")
                 val price = result.data?.getStringExtra("bookPrice")
+                val description = result.data?.getStringExtra("bookDescription")
 
-                if (!title.isNullOrEmpty() && !price.isNullOrEmpty()) {
+                if (
+                    !title.isNullOrEmpty() &&
+                    !author.isNullOrEmpty() &&
+                    !edition.isNullOrEmpty() &&
+                    !price.isNullOrEmpty() &&
+                    !description.isNullOrEmpty()
+                ) {
 
-                    val newBook = Book(title, price)
+                    val newBook = Book(
+                        title,
+                        author,
+                        edition,
+                        price,
+                        description,
+                        R.drawable.ic_launcher_background
+                    )
 
                     bookList.add(newBook)
                     filteredList.add(newBook)
@@ -51,26 +88,21 @@ class MainActivity : AppCompatActivity() {
 
         val btnSellBook = findViewById<Button>(R.id.btnSellBook)
         val btnProfile = findViewById<Button>(R.id.btnProfile)
-
         val recyclerBooks = findViewById<RecyclerView>(R.id.recyclerBooks)
         val etSearch = findViewById<EditText>(R.id.etSearch)
 
         filteredList.addAll(bookList)
 
         recyclerBooks.layoutManager = LinearLayoutManager(this)
-
         adapter = BookAdapter(filteredList)
-
         recyclerBooks.adapter = adapter
 
         btnSellBook.setOnClickListener {
-
             val intent = Intent(this, SellBookActivity::class.java)
             sellBookLauncher.launch(intent)
         }
 
         btnProfile.setOnClickListener {
-
             val intent = Intent(this, ProfileActivity::class.java)
             startActivity(intent)
         }
@@ -104,14 +136,13 @@ class MainActivity : AppCompatActivity() {
         filteredList.clear()
 
         if (query.isEmpty()) {
-
             filteredList.addAll(bookList)
-
         } else {
-
             filteredList.addAll(
                 bookList.filter {
-                    it.title.contains(query, ignoreCase = true)
+                    it.title.contains(query, ignoreCase = true) ||
+                            it.author.contains(query, ignoreCase = true) ||
+                            it.edition.contains(query, ignoreCase = true)
                 }
             )
         }

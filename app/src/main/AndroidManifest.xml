@@ -10,6 +10,10 @@
         android:theme="@style/Theme.TextbookStoreApp">
 
         <activity
+            android:name=".activities.ContactSellerActivity"
+            android:exported="false" />
+
+        <activity
             android:name=".activities.BookDetailsActivity"
             android:exported="false" />
 

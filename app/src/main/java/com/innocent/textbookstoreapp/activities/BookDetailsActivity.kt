@@ -1,34 +1,42 @@
 package com.innocent.textbookstoreapp.activities
 
+import android.content.Intent
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.innocent.textbookstoreapp.R
+import com.innocent.textbookstoreapp.databinding.ActivityBookDetailsBinding
 
 class BookDetailsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityBookDetailsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_book_details)
 
-        val tvBookName = findViewById<TextView>(R.id.tvBookName)
-        val tvBookPrice = findViewById<TextView>(R.id.tvBookPrice)
-        val btnContactSeller = findViewById<Button>(R.id.btnContactSeller)
+        binding = ActivityBookDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val bookTitle = intent.getStringExtra("bookTitle")
-        val bookPrice = intent.getStringExtra("bookPrice")
+        val title = intent.getStringExtra("title") ?: ""
+        val author = intent.getStringExtra("author") ?: ""
+        val edition = intent.getStringExtra("edition") ?: ""
+        val price = intent.getStringExtra("price") ?: ""
+        val description = intent.getStringExtra("description") ?: ""
 
-        tvBookName.text = bookTitle
-        tvBookPrice.text = "Price: $bookPrice"
+        binding.bookTitle = title
+        binding.bookAuthor = author
+        binding.bookEdition = edition
+        binding.bookPrice = price
+        binding.bookDescription = description
 
-        btnContactSeller.setOnClickListener {
-            Toast.makeText(
+        binding.btnContactSeller.setOnClickListener {
+
+            val intent = Intent(
                 this,
-                "Seller Contact Requested",
-                Toast.LENGTH_SHORT
-            ).show()
+                ContactSellerActivity::class.java
+            )
+
+            intent.putExtra("bookTitle", title)
+
+            startActivity(intent)
         }
     }
 }
